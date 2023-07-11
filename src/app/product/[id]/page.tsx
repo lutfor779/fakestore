@@ -2,8 +2,14 @@
 
 import Layout from "@/components/Layout";
 import Loading from "@/components/Loading";
+import { addToCart, clearMessage } from "@/redux/features/cart/cartSlice";
+import {
+	getProductDetails,
+	resetProductDetails,
+} from "@/redux/features/product/productSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 type Product = {
 	category: string;
@@ -22,19 +28,27 @@ type ProductDetailsProps = {
 };
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ params }) => {
-	const [product, setProduct] = useState<Product | undefined>();
+	const { productDetails } = useAppSelector((state: any) => state.product);
+	const { message } = useAppSelector((state: any) => state.cart);
+
+	const product: Product | null = productDetails;
 
 	const router = useRouter();
+	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		fetch(`https://fakestoreapi.com/products/${params.id}`)
-			.then((res) => res.json())
-			.then((json) => setProduct(json))
-			.catch((err) => console.log(err));
+		dispatch(getProductDetails(params.id));
 	}, [params.id]);
 
+	useMemo(() => {
+		if (message) {
+			window.alert(message);
+			dispatch(clearMessage());
+		}
+	}, [message]);
+
 	const handleCart = () => {
-		console.log(product);
+		product && dispatch(addToCart(product));
 	};
 
 	return (
@@ -78,18 +92,22 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ params }) => {
 							</>
 
 							{/* actions */}
-							<div className="flex gap-5 ">
-								<button
-									onClick={() => router.back()}
-									className="font-bold text-gray-500 px-4 py-2 rounded shadow hover:scale-95 border transform transition-all duration-300 ease-in-out"
-								>
-									Go back
-								</button>
+							<div className="flex gap-12 justify-between md:justify-start">
 								<button
 									onClick={handleCart}
 									className="bg-gray-500 hover:bg-gray-700 font-bold text-white px-4 py-2 rounded shadow hover:scale-105 transform transition-all duration-300 ease-in-out"
 								>
 									Add to Cart
+								</button>
+
+								<button
+									onClick={() => {
+										dispatch(resetProductDetails());
+										router.back();
+									}}
+									className="font-bold text-gray-500 px-4 py-2 rounded shadow hover:scale-95 border transform transition-all duration-300 ease-in-out"
+								>
+									Go back
 								</button>
 							</div>
 						</div>

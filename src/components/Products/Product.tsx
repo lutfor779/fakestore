@@ -1,7 +1,9 @@
 "use client";
 
+import { addToCart, clearMessage } from "@/redux/features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 
 type Product = {
 	category: string;
@@ -18,9 +20,19 @@ type ProductProps = {
 };
 
 const Product: React.FC<ProductProps> = ({ product }) => {
-	const handleCart = () => {
-		console.log(product.id);
+	const { message } = useAppSelector((state: any) => state.cart);
+	const dispatch = useAppDispatch();
+
+	const handleCart = (product: Product) => {
+		dispatch(addToCart(product));
 	};
+
+	useMemo(() => {
+		if (message) {
+			window.alert(message);
+			dispatch(clearMessage());
+		}
+	}, [message]);
 
 	return (
 		<div className="max-w-xs mx-auto bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl duration-300 hover:bg-gray-100 transition-all scale-95 hover:scale-100">
@@ -56,7 +68,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 			<div className="p-4 pt-0 flex justify-between items-center">
 				<p className="text-2xl font-bold text-gray-700"> ${product.price}</p>
 				<button
-					onClick={handleCart}
+					onClick={() => handleCart(product)}
 					className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded"
 				>
 					Add to Cart
