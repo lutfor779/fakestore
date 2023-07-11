@@ -13,7 +13,7 @@ const Header: React.FC = () => {
 				{/* menu */}
 				<ul className="flex items-center space-x-4">
 					<li>
-						<Link href="/">
+						<Link href="/product">
 							<p className="hover:text-gray-400">Shop</p>
 						</Link>
 					</li>

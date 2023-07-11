@@ -1,3 +1,6 @@
+"use client";
+
+import Link from "next/link";
 import React from "react";
 
 type Product = {
@@ -15,17 +18,22 @@ type ProductProps = {
 };
 
 const Product: React.FC<ProductProps> = ({ product }) => {
+	const handleCart = () => {
+		console.log(product.id);
+	};
+
 	return (
 		<div className="max-w-xs mx-auto bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl duration-300 hover:bg-gray-100 transition-all scale-95 hover:scale-100">
-			<img
-				src={product.image}
-				alt={product.title}
-				className="h-72 md:h-96 object-contain mx-auto p-3 bg-white w-full"
-			/>
+			{/* body */}
+			<Link href={`/product/${product.id}`}>
+				<img
+					src={product.image}
+					alt={product.title}
+					className="h-72 md:h-96 object-contain mx-auto p-3 bg-white w-full"
+				/>
 
-			<div className="p-4">
 				{/* details */}
-				<div>
+				<div className="p-4">
 					<h2
 						title={product.title}
 						className="text-2xl font-semibold truncate overflow-x-hidden text-gray-800"
@@ -39,17 +47,20 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 					<p className="my-4 text-gray-600 font-semibold">
 						Rating: {product.rating.rate} ({product.rating.count} reviews)
 					</p>
-				</div>
 
-				<hr className="my-4" />
-
-				{/* footer */}
-				<div className="flex justify-between items-center">
-					<p className="text-2xl font-bold text-gray-700"> ${product.price}</p>
-					<button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded">
-						Add to Cart
-					</button>
+					<hr />
 				</div>
+			</Link>
+
+			{/* footer */}
+			<div className="p-4 pt-0 flex justify-between items-center">
+				<p className="text-2xl font-bold text-gray-700"> ${product.price}</p>
+				<button
+					onClick={handleCart}
+					className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded"
+				>
+					Add to Cart
+				</button>
 			</div>
 		</div>
 	);

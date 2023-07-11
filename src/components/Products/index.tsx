@@ -8,6 +8,7 @@ import {
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Loading from "../Loading";
 import Product from "./Product";
 
 const Products: React.FC = () => {
@@ -54,12 +55,15 @@ const Products: React.FC = () => {
 			<p>All products</p>
 
 			{/* products */}
-			<div className="flex flex-wrap gap-x-3 gap-y-11 py-6">
-				{allProducts.length > 0 &&
-					allProducts.map((item: any) => (
+			{allProducts.length > 0 ? (
+				<div className="flex flex-wrap gap-x-3 gap-y-11 py-6">
+					{allProducts.map((item: any) => (
 						<Product key={item.id} product={item} />
 					))}
-			</div>
+				</div>
+			) : (
+				<Loading />
+			)}
 		</div>
 	);
 };
