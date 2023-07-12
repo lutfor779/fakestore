@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CartState } from "../cart/cartSlice";
 
 type Product = {
 	category: string;
@@ -16,6 +17,11 @@ interface ProductState {
 	categories: string[];
 	productDetails: Product | null;
 	category: string;
+}
+
+interface StoreState {
+	product: ProductState;
+	cart: CartState;
 }
 
 const initialState: ProductState = {
@@ -65,6 +71,24 @@ export const getProductsByCategory = createAsyncThunk(
 		}
 	}
 );
+
+export const sortProducts = createAsyncThunk<
+	Product[],
+	string,
+	{ state: StoreState }
+>("products/sortProducts", async (sortBy: string, { getState }) => {
+	const { product } = getState();
+
+	if (sortBy === "priceLowToHigh") {
+		const sorted = [...product.products].sort((a, b) => a.price - b.price);
+		return sorted;
+	} else if (sortBy === "priceHighToLow") {
+		const sorted = [...product.products].sort((a, b) => b.price - a.price);
+		return sorted;
+	} else {
+		return product.products;
+	}
+});
 
 const productSlice = createSlice({
 	name: "products",
@@ -118,6 +142,19 @@ const productSlice = createSlice({
 			}
 		);
 		builder.addCase(getProductsByCategory.rejected, (state) => {
+			state.productsLoading = false;
+		});
+		builder.addCase(sortProducts.pending, (state) => {
+			state.productsLoading = true;
+		});
+		builder.addCase(
+			sortProducts.fulfilled,
+			(state, action: PayloadAction<Product[]>) => {
+				state.productsLoading = false;
+				state.products = action.payload;
+			}
+		);
+		builder.addCase(sortProducts.rejected, (state) => {
 			state.productsLoading = false;
 		});
 	},

@@ -14,7 +14,7 @@ interface Item {
 	quantity?: number;
 }
 
-interface CartState {
+export interface CartState {
 	items: Item[];
 	loading: boolean;
 	message: string | null;

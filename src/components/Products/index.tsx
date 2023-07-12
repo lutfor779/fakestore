@@ -4,6 +4,7 @@ import {
 	getCategories,
 	getProductsByCategory,
 	setCategory,
+	sortProducts,
 } from "@/redux/features/product/productSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import Link from "next/link";
@@ -42,28 +43,49 @@ const Products: React.FC = () => {
 		dispatch(getProductsByCategory(data));
 	};
 
+	const handleSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const sortBy = e.target.value;
+		dispatch(sortProducts(sortBy));
+		console.log(sortBy);
+	};
+
 	return (
 		<div className="container mx-auto">
 			<h2 className="px-3 text-3xl font-bold text-gray-700 text-center my-5">
 				Explore our Products
 			</h2>
 
-			{/* filter */}
-			<ul className="flex flex-wrap gap-3 p-3 ">
-				{categories.map((item: string) => (
-					<li
-						key={item}
-						className={`px-2 py-1 rounded-md cursor-pointer capitalize ${
-							item === category
-								? "bg-gray-700 text-white font-semibold"
-								: "bg-gray-200"
-						}`}
-						onClick={() => handleCategoryClick(item)}
+			<div className="flex justify-between items-end md:items-center flex-col md:flex-row">
+				{/* filter */}
+				<ul className="flex flex-wrap gap-3 p-3 ">
+					{categories.map((item: string) => (
+						<li
+							key={item}
+							className={`px-2 py-1 rounded-md cursor-pointer capitalize ${
+								item === category
+									? "bg-gray-700 text-white font-semibold"
+									: "bg-gray-200"
+							}`}
+							onClick={() => handleCategoryClick(item)}
+						>
+							{item}
+						</li>
+					))}
+				</ul>
+
+				{/* sort */}
+				<div className=" pr-3">
+					<select
+						id="sort"
+						className="p-2 border border-gray-300 bg-gray-200 text-gray-900 rounded"
+						onChange={handleSort}
 					>
-						{item}
-					</li>
-				))}
-			</ul>
+						<option value="a">Sort</option>
+						<option value="priceLowToHigh">Price: Low to High</option>
+						<option value="priceHighToLow">Price: High to Low</option>
+					</select>
+				</div>
+			</div>
 
 			{productsLoading ? (
 				<Loading />
