@@ -70,6 +70,17 @@ export const removeFromCart = createAsyncThunk(
 	}
 );
 
+export const deleteFromCart = createAsyncThunk(
+	"cart/deleteFromCart",
+	async (id: number, { getState }) => {
+		const state = getState() as { cart: CartState };
+		const items = state.cart.items;
+
+		const remaining = await items.filter((i) => i.id !== id);
+		return remaining;
+	}
+);
+
 const cartSlice = createSlice({
 	name: "cart",
 	initialState,
@@ -106,6 +117,22 @@ const cartSlice = createSlice({
 				}
 			)
 			.addCase(removeFromCart.rejected, (state, action) => {
+				state.loading = false;
+				state.message = "Something went wrong!";
+				console.log(action.error.message);
+			})
+			.addCase(deleteFromCart.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(
+				deleteFromCart.fulfilled,
+				(state, action: PayloadAction<Item[]>) => {
+					state.loading = false;
+					state.items = action.payload;
+					state.message = "Product deleted succesfully!";
+				}
+			)
+			.addCase(deleteFromCart.rejected, (state, action) => {
 				state.loading = false;
 				state.message = "Something went wrong!";
 				console.log(action.error.message);
