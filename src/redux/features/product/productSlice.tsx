@@ -15,6 +15,7 @@ interface ProductState {
 	productsLoading: boolean;
 	categories: string[];
 	productDetails: Product | null;
+	category: string;
 }
 
 const initialState: ProductState = {
@@ -22,21 +23,19 @@ const initialState: ProductState = {
 	products: [],
 	categories: [],
 	productDetails: null,
+	category: "all",
 };
 
-export const getProducts = createAsyncThunk("products/getAll", async () => {
-	const response = await fetch("https://fakestoreapi.com/products");
-	const json = await response.json();
-
-	const categories = json
-		.map((item: { category: string }) => item.category)
-		.filter(
-			(value: string, index: number, array: string[]) =>
-				array.indexOf(value) === index
+export const getCategories = createAsyncThunk(
+	"products/getCategories",
+	async () => {
+		const response = await fetch(
+			"https://fakestoreapi.com/products/categories"
 		);
-
-	return { products: json, categories: ["all", ...categories] };
-});
+		const json = await response.json();
+		return ["all", ...json];
+	}
+);
 
 export const getProductDetails = createAsyncThunk(
 	"products/getDetails",
@@ -45,6 +44,25 @@ export const getProductDetails = createAsyncThunk(
 		const json = await response.json();
 
 		return json;
+	}
+);
+
+export const getProductsByCategory = createAsyncThunk(
+	"products/getProductsByCategory",
+	async (category: string) => {
+		if (category === "all") {
+			const response = await fetch("https://fakestoreapi.com/products");
+			const json = await response.json();
+
+			return json;
+		} else {
+			const response = await fetch(
+				`https://fakestoreapi.com/products/category/${category}`
+			);
+			const json = await response.json();
+
+			return json;
+		}
 	}
 );
 
@@ -58,28 +76,11 @@ const productSlice = createSlice({
 		resetProductDetails: (state) => {
 			state.productDetails = null;
 		},
+		setCategory: (state, action: PayloadAction<string>) => {
+			state.category = action.payload;
+		},
 	},
 	extraReducers(builder) {
-		builder.addCase(getProducts.pending, (state) => {
-			state.productsLoading = true;
-		});
-		builder.addCase(
-			getProducts.fulfilled,
-			(
-				state,
-				action: PayloadAction<{
-					products: Product[];
-					categories: string[];
-				}>
-			) => {
-				state.productsLoading = false;
-				state.products = action.payload.products;
-				state.categories = action.payload.categories;
-			}
-		);
-		builder.addCase(getProducts.rejected, (state) => {
-			state.productsLoading = false;
-		});
 		builder.addCase(getProductDetails.pending, (state) => {
 			state.productsLoading = true;
 		});
@@ -93,8 +94,35 @@ const productSlice = createSlice({
 		builder.addCase(getProductDetails.rejected, (state) => {
 			state.productsLoading = false;
 		});
+		builder.addCase(getCategories.pending, (state) => {
+			state.productsLoading = true;
+		});
+		builder.addCase(
+			getCategories.fulfilled,
+			(state, action: PayloadAction<string[]>) => {
+				state.productsLoading = false;
+				state.categories = action.payload;
+			}
+		);
+		builder.addCase(getCategories.rejected, (state) => {
+			state.productsLoading = false;
+		});
+		builder.addCase(getProductsByCategory.pending, (state) => {
+			state.productsLoading = true;
+		});
+		builder.addCase(
+			getProductsByCategory.fulfilled,
+			(state, action: PayloadAction<Product[]>) => {
+				state.productsLoading = false;
+				state.products = action.payload;
+			}
+		);
+		builder.addCase(getProductsByCategory.rejected, (state) => {
+			state.productsLoading = false;
+		});
 	},
 });
 
-export const { resetProducts, resetProductDetails } = productSlice.actions;
+export const { resetProducts, resetProductDetails, setCategory } =
+	productSlice.actions;
 export default productSlice.reducer;

@@ -52,7 +52,7 @@ const Product: React.FC<ProductProps> = ({ product }) => {
 					>
 						{product.title}
 					</h2>
-					<p className="text-gray-600 font-semibold mb-2">
+					<p className="text-gray-600 font-semibold mb-2 capitalize">
 						Category: {product.category}
 					</p>
 					<p className="text-gray-800 line-clamp-3">{product.description}</p>

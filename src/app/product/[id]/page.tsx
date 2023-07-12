@@ -70,7 +70,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ params }) => {
 							{/* details */}
 							<>
 								<h2 className="text-2xl font-bold my-3">{product.title}</h2>
-								<p className="text-gray-700 mb-4 font-semibold">
+								<p className="text-gray-700 mb-4 font-semibold capitalize">
 									Category: {product.category}
 								</p>
 
