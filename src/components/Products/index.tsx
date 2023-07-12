@@ -80,7 +80,11 @@ const Products: React.FC = () => {
 						className="p-2 border border-gray-300 bg-gray-200 text-gray-900 rounded"
 						onChange={handleSort}
 					>
-						<option value="a">Sort</option>
+						<option disabled selected>
+							Sort
+						</option>
+						<option value="nameAscending">Name: Ascending</option>
+						<option value="nameDescending">Name: Descending</option>
 						<option value="priceLowToHigh">Price: Low to High</option>
 						<option value="priceHighToLow">Price: High to Low</option>
 					</select>

@@ -72,6 +72,28 @@ export const getProductsByCategory = createAsyncThunk(
 	}
 );
 
+// export const sortProducts = createAsyncThunk<
+// 	Product[],
+// 	string,
+// 	{ state: StoreState }
+// >("products/sortProducts", async (sortBy: string, { getState }) => {
+// 	const { product } = getState();
+
+// 	if (sortBy === "priceLowToHigh") {
+// 		const sorted = [...product.products].sort((a, b) => a.price - b.price);
+// 		return sorted;
+// 	} else if (sortBy === "priceHighToLow") {
+// 		const sorted = [...product.products].sort((a, b) => b.price - a.price);
+// 		return sorted;
+// 	} else if (sortBy === "nameAscending") {
+// 		return product.products
+// 	} else if (sortBy === "nameDescending") {
+// 		return product.products;
+// 	} else {
+// 		return product.products;
+// 	}
+// });
+
 export const sortProducts = createAsyncThunk<
 	Product[],
 	string,
@@ -85,8 +107,18 @@ export const sortProducts = createAsyncThunk<
 	} else if (sortBy === "priceHighToLow") {
 		const sorted = [...product.products].sort((a, b) => b.price - a.price);
 		return sorted;
+	} else if (sortBy === "nameAscending") {
+		const sorted = [...product.products].sort((a, b) =>
+			a.title.localeCompare(b.title)
+		);
+		return sorted;
+	} else if (sortBy === "nameDescending") {
+		const sorted = [...product.products].sort((a, b) =>
+			b.title.localeCompare(a.title)
+		);
+		return sorted;
 	} else {
-		return product.products;
+		return [...product.products];
 	}
 });
 
