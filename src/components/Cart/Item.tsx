@@ -4,6 +4,7 @@ import {
 	removeFromCart,
 } from "@/redux/features/cart/cartSlice";
 import { useAppDispatch } from "@/redux/hook";
+import Link from "next/link";
 import React, { memo } from "react";
 import { ProductProps } from "./index";
 
@@ -26,7 +27,10 @@ const Item: React.FC<ProductProps> = (props) => {
 
 	return (
 		<div className="p-4 bg-white rounded-lg shadow hover:shadow-lg flex flex-col md:flex-row items-center justify-between transition-all duration-300">
-			<div className="flex items-center justify-start w-full md:w-2/5">
+			<Link
+				href={`/product/${id}`}
+				className="flex items-center justify-start w-full md:w-2/5"
+			>
 				<div className="w-16">
 					{image && (
 						<img src={image} alt={title} className="w-16 h-16 object-contain" />
@@ -38,7 +42,7 @@ const Item: React.FC<ProductProps> = (props) => {
 				>
 					{title}
 				</h3>
-			</div>
+			</Link>
 
 			<p title="Price" className="text-gray-500 mt-2 md:mt-0">
 				${price}

@@ -53,9 +53,8 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ params }) => {
 
 	return (
 		<Layout>
-			<p>{params.id}</p>
 			{product ? (
-				<div className="container mx-auto bg-gray-50 rounded-lg ">
+				<div className="container mx-auto bg-gray-50 rounded-lg mt-5 md:mt-12">
 					<div className="px-4 py-6 flex flex-col md:flex-row">
 						{/* image */}
 						<div className="p-5  md:w-1/2 flex justify-center items-center bg-white rounded-lg shadow hover:shadow-lg hover:scale-105 transform duration-300 ">
